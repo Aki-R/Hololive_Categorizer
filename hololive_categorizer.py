@@ -1,26 +1,24 @@
-import os
 import tensorflow as tf
 import keras
 import glob
-import cv2
 import numpy as np
 import matplotlib.pyplot as plt
-from keras.layers import Dense, Flatten, Activation, Dropout
+from keras.layers import Dense, Flatten, Dropout
 from keras.models import Sequential
-from keras.layers import Conv2D, MaxPooling2D, RandomRotation, RandomZoom, RandomFlip, RandomTranslation, Rescaling
+from keras.layers import RandomRotation, RandomZoom, RandomFlip, RandomTranslation, Rescaling
 from keras.utils.np_utils import to_categorical
-from keras.preprocessing.image import load_img, img_to_array
+from keras.preprocessing.image import load_img
 from keras.applications.vgg16 import VGG16
 from sklearn.model_selection import train_test_split
 
 # Disable GPU
-#os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
+# os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
 
 # Show Tensorflow and Keras version
 print(tf.__version__)
 print(keras.__version__)
 
-#Categorize No.
+# Categorize No.
 TOKINOSORA = 0
 PEKORA = 1
 HUBUKI = 2
@@ -47,7 +45,8 @@ PATH_KANATA = './Train_Data/kanata/*'
 def trainModelAndSave(model, inputs, outputs, epochs, batch_size):
     X_train, X_valid, y_train, y_valid = train_test_split(inputs, outputs, test_size=0.2, shuffle=True)
     # Setting model
-    opt = tf.keras.optimizers.RMSprop(learning_rate=1.0e-4)
+    #opt = tf.keras.optimizers.RMSprop(learning_rate=1.0e-4)
+    opt = tf.keras.optimizers.Adam(learning_rate=1.0e-4)
     model.compile(optimizer=opt, loss='categorical_crossentropy', metrics=['accuracy'])
     model.summary()
     # Learning model
@@ -59,7 +58,6 @@ def trainModelAndSave(model, inputs, outputs, epochs, batch_size):
 def vgg16_model():
     # base vgg16 model
     conv_base = VGG16(weights='imagenet', include_top=False)
-    #conv_base.trainable = False
     conv_base.trainable = True
     for layer in conv_base.layers[:-4]:
         layer.trainable = False
@@ -77,26 +75,9 @@ def vgg16_model():
     model.add(Dense(9, activation='softmax'))
     return model
 
-def cnn_model():
-    model = Sequential()
-    model.add(Rescaling(scale=1./255, input_shape=(256, 256, 3)))
-    model.add(RandomRotation(factor=0.15))
-    model.add(RandomZoom(height_factor=(-0.2, 0.2), width_factor=(-0.2, 0.2)))
-    model.add(RandomFlip('horizontal'))
-    model.add(RandomTranslation(height_factor=0.2, width_factor=0.2))
-    model.add(Conv2D(32, (3, 3), activation='relu'))
-    model.add(Conv2D(64, (3, 3), activation='relu'))
-    model.add(MaxPooling2D(pool_size=(2, 2)))
-    model.add(Dropout(0.2))
-    model.add(Flatten())
-    model.add(Dense(1024, activation='relu'))
-    model.add(Dense(9))
-    return model
-
 def ImageLoad(number, path):
     files = glob.glob(path)
     for file in files:
-        #print(file)
         image_pil = load_img(file, grayscale=False, color_mode='rgb', target_size=(256, 256))
         image = np.array(image_pil, dtype=np.uint8)
         name = number
@@ -129,23 +110,21 @@ epochs = 30
 batch_size = 128
 
 model = vgg16_model()
-#model = cnn_model()
 fit = trainModelAndSave(model, images_np, y_names, epochs, batch_size)
 
-plt.plot(fit.history['loss'])
-plt.plot(fit.history['val_loss'])
-plt.title('model sparse categorical crossentropy accuracy')
-plt.ylabel('sparse categorical crossentropy accuracy')
-plt.xlabel('epoch')
-plt.legend(['training data', 'validation data'], loc='upper right')
-plt.show()
-plt.close()
+fig, axs = plt.subplots(2, 1)
 
-plt.plot(fit.history['accuracy'])
-plt.plot(fit.history['val_accuracy'])
-plt.title('model sparse categorical crossentropy accuracy')
-plt.ylabel('sparse categorical crossentropy accuracy')
-plt.xlabel('epoch')
-plt.legend(['training data', 'validation data'], loc='upper right')
+axs[0].plot(fit.history['loss'])
+axs[0].plot(fit.history['val_loss'])
+axs[0].set_ylabel('crossentropy loss')
+axs[0].set_xlabel('epoch')
+axs[0].legend(['training data', 'validation data'], loc='upper right')
+
+axs[1].plot(fit.history['accuracy'])
+axs[1].plot(fit.history['val_accuracy'])
+axs[1].set_ylabel('crossentropy accuracy')
+axs[1].set_xlabel('epoch')
+axs[1].legend(['training data', 'validation data'], loc='lower right')
+
 plt.show()
-plt.close()
+plt.close(fig)
