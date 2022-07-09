@@ -1,9 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
 from keras.models import load_model
-from keras.preprocessing.image import load_img, img_to_array
 from PIL import ImageGrab
-import cv2
 import numpy as np
 
 MODEL_PATH = './model_app.h5'
@@ -97,7 +95,6 @@ class Frame_Control(tk.Frame):
         self.label_result.pack()
 
     def start_categorize(self):
-        #result = model.predict(image_expand, batch_size=1)
         print('start')
         print(self.master.winfo_x())
         global image
@@ -106,23 +103,16 @@ class Frame_Control(tk.Frame):
         y1 = self.master.winfo_y() + 75
         y2 = y1+256
         frameposition = (x1,y1,x2,y2)
-        image_raw = ImageGrab.grab(bbox=frameposition)
+        image_raw = ImageGrab.grab(bbox=frameposition, all_screens=True)
         image = np.array(image_raw, dtype=np.uint8)
-        #new_image = cv2.cvtColor(new_image, cv2.COLOR_RGB2BGR)
-        #cv2.imshow('reshaped image', new_image)
         image_expand = image[np.newaxis, :, :, :]
-        print(image.shape)
-        print(image_expand.shape)
         result = self.model.predict(image_expand, batch_size=1)
-        print(result)
         whois = result.argmax()
         probability = result[0,whois] * 100
         result_text = f'{HOLOLIST[whois]}:{probability}, %'
         print(result_text)
         self.label_result.configure(text=result_text)
         self.after(100, self.start_categorize)
-
-
 
 
 class Frame_Display(tk.Frame):
@@ -132,6 +122,7 @@ class Frame_Display(tk.Frame):
         self.configure(background ='snow')
         self.configure(width=256, height=256)
         self.pack(expand=1, fill=tk.BOTH)
+
 
 if __name__ == "__main__":
     root = tk.Tk()
