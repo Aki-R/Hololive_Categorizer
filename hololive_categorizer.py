@@ -5,7 +5,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 from keras.layers import Dense, Flatten, Dropout
 from keras.models import Sequential
-from keras.layers import RandomRotation, RandomZoom, RandomFlip, RandomTranslation, Rescaling
+from keras.layers import RandomRotation, RandomZoom, RandomFlip, \
+    RandomTranslation, Rescaling
 from keras.utils.np_utils import to_categorical
 from keras.preprocessing.image import load_img
 from keras.applications.vgg16 import VGG16
@@ -136,18 +137,26 @@ PATH_KIARA = './Train_Data/kiara/*'
 images = []
 names = []
 
+
 def trainModelAndSave(model, inputs, outputs, epochs, batch_size):
-    X_train, X_valid, y_train, y_valid = train_test_split(inputs, outputs, test_size=0.2, shuffle=True)
+    X_train, X_valid, y_train, y_valid = \
+        train_test_split(inputs, outputs, test_size=0.2, shuffle=True)
     # Setting model
     opt = tf.keras.optimizers.Adam(learning_rate=1.0e-4)
-    model.compile(optimizer=opt, loss='categorical_crossentropy', metrics=['accuracy'])
+    model.compile(optimizer=opt, loss='categorical_crossentropy',
+                  metrics=['accuracy'])
     model.summary()
-    cp = ModelCheckpoint(filepath='model_best.h5', monitor='val_loss', verbose=1, save_best_only=True, save_weights_only=False, mode='min', period=1)
+    cp = ModelCheckpoint(filepath='model_best.h5', monitor='val_loss',
+                         verbose=1, save_best_only=True,
+                         save_weights_only=False, mode='min', period=1)
     # Learning model
-    fit = model.fit(X_train, y_train, batch_size=batch_size, epochs=epochs, verbose=1, validation_data=(X_valid, y_valid), callbacks=[cp])
+    fit = model.fit(X_train, y_train, batch_size=batch_size,
+                    epochs=epochs, verbose=1,
+                    validation_data=(X_valid, y_valid), callbacks=[cp])
     # Saving model
     model.save('model.h5')
     return fit
+
 
 def vgg16_model():
     # base vgg16 model
@@ -169,14 +178,17 @@ def vgg16_model():
     model.add(Dense(58, activation='softmax'))
     return model
 
+
 def ImageLoad(number, path):
     files = glob.glob(path)
     for file in files:
-        image_pil = load_img(file, grayscale=False, color_mode='rgb', target_size=(256, 256))
+        image_pil = load_img(file, grayscale=False, color_mode='rgb',
+                             target_size=(256, 256))
         image = np.array(image_pil, dtype=np.uint8)
         name = number
         images.append(image)
         names.append(name)
+
 
 def LoadAllImage():
     ImageLoad(TOKINOSORA, PATH_TOKINOSORA)
@@ -237,6 +249,7 @@ def LoadAllImage():
     ImageLoad(FRIENDA, PATH_FRIENDA)
     ImageLoad(NODOKA, PATH_NODOKA)
     ImageLoad(KIARA, PATH_KIARA)
+
 
 if __name__ == "__main__":
     # Disable GPU

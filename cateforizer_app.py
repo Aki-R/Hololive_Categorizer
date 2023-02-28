@@ -68,6 +68,7 @@ HOLOLIST = ['ときのそら',
 # Global Variable
 image = {}
 
+
 class Frame_Control(tk.Frame):
     def __init__(self, master=None):
         # Windowの初期設定を行う。
@@ -83,13 +84,13 @@ class Frame_Control(tk.Frame):
         self.model = load_model(MODEL_PATH)
 
     def create_wigdgets(self):
-        #Start Button
+        # Start Button
         self.button_start = ttk.Button(self)
         self.button_start.configure(text='Start')
-        self.button_start.configure(command = self.start_categorize)
+        self.button_start.configure(command=self.start_categorize)
         self.button_start.pack()
 
-        #Text Display for Result
+        # Text Display for Result
         self.label_result = tk.Label(self)
         self.label_result.configure(text='Who')
         self.label_result.pack()
@@ -102,13 +103,13 @@ class Frame_Control(tk.Frame):
         x2 = x1+256
         y1 = self.master.winfo_y() + 75
         y2 = y1+256
-        frameposition = (x1,y1,x2,y2)
+        frameposition = (x1, y1, x2, y2)
         image_raw = ImageGrab.grab(bbox=frameposition, all_screens=True)
         image = np.array(image_raw, dtype=np.uint8)
         image_expand = image[np.newaxis, :, :, :]
         result = self.model.predict(image_expand, batch_size=1)
         whois = result.argmax()
-        probability = result[0,whois] * 100
+        probability = result[0, whois] * 100
         result_text = f'{HOLOLIST[whois]}:{probability}, %'
         print(result_text)
         self.label_result.configure(text=result_text)
@@ -119,7 +120,7 @@ class Frame_Display(tk.Frame):
     def __init__(self, master=None):
         # Windowの初期設定を行う。
         super().__init__(master)
-        self.configure(background ='snow')
+        self.configure(background='snow')
         self.configure(width=256, height=256)
         self.pack(expand=1, fill=tk.BOTH)
 
