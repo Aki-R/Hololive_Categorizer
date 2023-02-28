@@ -1,0 +1,6 @@
+/Train_Data/*
+/.vscode/*
+/model.h5
+/model_app.h5
+/model_best.h5
+/yolov5s.pt
