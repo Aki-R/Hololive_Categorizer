@@ -12,13 +12,6 @@ from keras.applications.vgg16 import VGG16
 from keras.callbacks import ModelCheckpoint
 from sklearn.model_selection import train_test_split
 
-# Disable GPU
-# os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
-
-# Show Tensorflow and Keras version
-print(tf.__version__)
-print(keras.__version__)
-
 # Categorize No.
 TOKINOSORA = 0
 PEKORA = 1
@@ -140,6 +133,9 @@ PATH_FRIENDA = './Train_Data/frienda/*'
 PATH_NODOKA = './Train_Data/nodoka/*'
 PATH_KIARA = './Train_Data/kiara/*'
 
+images = []
+names = []
+
 def trainModelAndSave(model, inputs, outputs, epochs, batch_size):
     X_train, X_valid, y_train, y_valid = train_test_split(inputs, outputs, test_size=0.2, shuffle=True)
     # Setting model
@@ -182,95 +178,103 @@ def ImageLoad(number, path):
         images.append(image)
         names.append(name)
 
-images = []
-names = []
+def LoadAllImage():
+    ImageLoad(TOKINOSORA, PATH_TOKINOSORA)
+    ImageLoad(PEKORA, PATH_PEKORA)
+    ImageLoad(HUBUKI, PATH_HUBUKI)
+    ImageLoad(MARIN, PATH_MARIN)
+    ImageLoad(NOEL, PATH_NOEL)
+    ImageLoad(SUISEI, PATH_SUISEI)
+    ImageLoad(KORONE, PATH_KORONE)
+    ImageLoad(MIKO, PATH_MIKO)
+    ImageLoad(KANATA, PATH_KANATA)
+    ImageLoad(ROBOCO, PATH_ROBOCO)
+    ImageLoad(MEL, PATH_MEL)
+    ImageLoad(AKIROSE, PATH_AKIROSE)
+    ImageLoad(HACHAMA, PATH_HACHAMA)
+    ImageLoad(MATSURI, PATH_MATSURI)
+    ImageLoad(AQUA, PATH_AQUA)
+    ImageLoad(SHION, PATH_SHION)
+    ImageLoad(AYAME, PATH_AYAME)
+    ImageLoad(CHOCO, PATH_CHOCO)
+    ImageLoad(SUBARU, PATH_SUBARU)
+    ImageLoad(AZKI, PATH_AZUKI)
+    ImageLoad(MIO, PATH_MIO)
+    ImageLoad(OKAYU, PATH_OKAYU)
+    ImageLoad(FLARE, PATH_FALRE)
+    ImageLoad(WATAME, PATH_WATAME)
+    ImageLoad(TOWA, PATH_TOWA)
+    ImageLoad(LUNA, PATH_LUNA)
+    ImageLoad(LAMY, PATH_LAMY)
+    ImageLoad(NENE, PATH_NENE)
+    ImageLoad(BOTAN, PATH_BOTAN)
+    ImageLoad(POLKA, PATH_POLKA)
+    ImageLoad(LAPLUS, PATH_LAPLUS)
+    ImageLoad(LUI, PATH_LUI)
+    ImageLoad(KOYORI, PATH_KOYORI)
+    ImageLoad(CHLOE, PATH_CHLOE)
+    ImageLoad(IROHA, PATH_IROHA)
+    ImageLoad(RISU, PATH_RISU)
+    ImageLoad(MOONA, PATH_MOONA)
+    ImageLoad(AIRANI, PATH_AIRANI)
+    ImageLoad(OLLIE, PATH_OLLIE)
+    ImageLoad(ANYA, PATH_ANYA)
+    ImageLoad(REINE, PATH_REINE)
+    ImageLoad(ZETA, PATH_ZETA)
+    ImageLoad(KAERA, PATH_KAERA)
+    ImageLoad(KOBO, PATH_KOBO)
+    ImageLoad(CALLIOPE, PATH_CALLIOPE)
+    ImageLoad(INANIS, PATH_INANIS)
+    ImageLoad(GURA, PATH_GURA)
+    ImageLoad(AMELIA, PATH_AMELIA)
+    ImageLoad(IRYS, PATH_IRYS)
+    ImageLoad(SANA, PATH_SANA)
+    ImageLoad(FAUNA, PATH_FAUNA)
+    ImageLoad(KRONII, PATH_KURONII)
+    ImageLoad(MUMEI, PATH_MUMEI)
+    ImageLoad(BAELZ, PATH_BAELZ)
+    ImageLoad(COCO, PATH_COCO)
+    ImageLoad(FRIENDA, PATH_FRIENDA)
+    ImageLoad(NODOKA, PATH_NODOKA)
+    ImageLoad(KIARA, PATH_KIARA)
 
-ImageLoad(TOKINOSORA, PATH_TOKINOSORA)
-ImageLoad(PEKORA, PATH_PEKORA)
-ImageLoad(HUBUKI, PATH_HUBUKI)
-ImageLoad(MARIN, PATH_MARIN)
-ImageLoad(NOEL, PATH_NOEL)
-ImageLoad(SUISEI, PATH_SUISEI)
-ImageLoad(KORONE, PATH_KORONE)
-ImageLoad(MIKO, PATH_MIKO)
-ImageLoad(KANATA, PATH_KANATA)
-ImageLoad(ROBOCO, PATH_ROBOCO)
-ImageLoad(MEL, PATH_MEL)
-ImageLoad(AKIROSE, PATH_AKIROSE)
-ImageLoad(HACHAMA, PATH_HACHAMA)
-ImageLoad(MATSURI, PATH_MATSURI)
-ImageLoad(AQUA, PATH_AQUA)
-ImageLoad(SHION, PATH_SHION)
-ImageLoad(AYAME, PATH_AYAME)
-ImageLoad(CHOCO, PATH_CHOCO)
-ImageLoad(SUBARU, PATH_SUBARU)
-ImageLoad(AZKI, PATH_AZUKI)
-ImageLoad(MIO, PATH_MIO)
-ImageLoad(OKAYU, PATH_OKAYU)
-ImageLoad(FLARE, PATH_FALRE)
-ImageLoad(WATAME, PATH_WATAME)
-ImageLoad(TOWA, PATH_TOWA)
-ImageLoad(LUNA, PATH_LUNA)
-ImageLoad(LAMY, PATH_LAMY)
-ImageLoad(NENE, PATH_NENE)
-ImageLoad(BOTAN, PATH_BOTAN)
-ImageLoad(POLKA, PATH_POLKA)
-ImageLoad(LAPLUS, PATH_LAPLUS)
-ImageLoad(LUI, PATH_LUI)
-ImageLoad(KOYORI, PATH_KOYORI)
-ImageLoad(CHLOE, PATH_CHLOE)
-ImageLoad(IROHA, PATH_IROHA)
-ImageLoad(RISU, PATH_RISU)
-ImageLoad(MOONA, PATH_MOONA)
-ImageLoad(AIRANI, PATH_AIRANI)
-ImageLoad(OLLIE, PATH_OLLIE)
-ImageLoad(ANYA, PATH_ANYA)
-ImageLoad(REINE, PATH_REINE)
-ImageLoad(ZETA, PATH_ZETA)
-ImageLoad(KAERA, PATH_KAERA)
-ImageLoad(KOBO, PATH_KOBO)
-ImageLoad(CALLIOPE, PATH_CALLIOPE)
-ImageLoad(INANIS, PATH_INANIS)
-ImageLoad(GURA, PATH_GURA)
-ImageLoad(AMELIA, PATH_AMELIA)
-ImageLoad(IRYS, PATH_IRYS)
-ImageLoad(SANA, PATH_SANA)
-ImageLoad(FAUNA, PATH_FAUNA)
-ImageLoad(KRONII, PATH_KURONII)
-ImageLoad(MUMEI, PATH_MUMEI)
-ImageLoad(BAELZ, PATH_BAELZ)
-ImageLoad(COCO, PATH_COCO)
-ImageLoad(FRIENDA, PATH_FRIENDA)
-ImageLoad(NODOKA, PATH_NODOKA)
-ImageLoad(KIARA, PATH_KIARA)
+if __name__ == "__main__":
+    # Disable GPU
+    # os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
 
-# Number to category array
-images_np = np.array(images)
-y_names = to_categorical(names)
+    # Show Tensorflow and Keras version
+    print(tf.__version__)
+    print(keras.__version__)
 
-print('size is ........................')
-print(images_np.shape)
-print(y_names)
+    LoadAllImage()
 
-epochs = 20
-batch_size = 128
+    # Number to category array
+    images_np = np.array(images)
+    y_names = to_categorical(names)
 
-model = vgg16_model()
-fit = trainModelAndSave(model, images_np, y_names, epochs, batch_size)
+    print('size is ........................')
+    print(images_np.shape)
+    print(y_names)
 
-fig, axs = plt.subplots(2, 1)
+    epochs = 20
+    batch_size = 128
 
-axs[0].plot(fit.history['loss'])
-axs[0].plot(fit.history['val_loss'])
-axs[0].set_ylabel('crossentropy loss')
-axs[0].set_xlabel('epoch')
-axs[0].legend(['training data', 'validation data'], loc='upper right')
+    model = vgg16_model()
+    fit = trainModelAndSave(model, images_np, y_names, epochs, batch_size)
 
-axs[1].plot(fit.history['accuracy'])
-axs[1].plot(fit.history['val_accuracy'])
-axs[1].set_ylabel('crossentropy accuracy')
-axs[1].set_xlabel('epoch')
-axs[1].legend(['training data', 'validation data'], loc='lower right')
+    fig, axs = plt.subplots(2, 1)
 
-plt.show()
-plt.close(fig)
+    axs[0].plot(fit.history['loss'])
+    axs[0].plot(fit.history['val_loss'])
+    axs[0].set_ylabel('crossentropy loss')
+    axs[0].set_xlabel('epoch')
+    axs[0].legend(['training data', 'validation data'], loc='upper right')
+
+    axs[1].plot(fit.history['accuracy'])
+    axs[1].plot(fit.history['val_accuracy'])
+    axs[1].set_ylabel('crossentropy accuracy')
+    axs[1].set_xlabel('epoch')
+    axs[1].legend(['training data', 'validation data'], loc='lower right')
+
+    plt.show()
+    plt.close(fig)
