@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 from keras.layers import Dense, Flatten, Dropout
 from keras.models import Sequential
 from keras.layers import RandomRotation, RandomZoom, RandomFlip, \
-    RandomTranslation, Rescaling
+    RandomTranslation, Rescaling, Input
 from keras.utils.np_utils import to_categorical
 from keras.preprocessing.image import load_img
 from keras.applications.vgg16 import VGG16
@@ -56,6 +56,27 @@ def vgg16_model():
     model.add(Dense(512, activation='relu'))
     model.add(Dropout(0.5))
     model.add(Dense(58, activation='softmax'))
+    return model
+
+
+def vgg16_functinal_model():
+    input = Input(shape=(256, 256, 3))
+    x = Rescaling(scale=1./255, input_shape=(256, 256, 3))(input)
+    x = RandomRotation(factor=0.15)(x)
+    x = RandomZoom(height_factor=(-0.2, 0.2), width_factor=(-0.2, 0.2))(x)
+    x = RandomFlip("horizontal")(x)
+    x = RandomTranslation(height_factor=0.2, width_factor=0.2)(x)
+
+    conv_base = VGG16(weights='imagenet', include_top=False, input_tensor=x)
+    conv_base.trainable = True
+    for layer in conv_base.layers[:-4]:
+        layer.trainable = False
+
+    x = Flatten()(conv_base.output)
+    x = Dense(512, activation='relu')(x)
+    x = Dropout(0.5)(x)
+    x = Dense(58, activation='softmax')(x)
+    model = keras.Model(inputs=input, outputs=x)
     return model
 
 
